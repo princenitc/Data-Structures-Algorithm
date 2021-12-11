@@ -1,0 +1,20 @@
+#include<iostream>
+using namespace std;
+
+void fun(int n)
+{
+    if(n > 0)
+    {
+        cout << "Descending order is : "  << n << endl;
+        fun(n-1);
+        cout << "ascending order is : " << n << endl;
+
+    }
+}
+
+int main()
+{
+    int x = 5;
+    fun(x);
+    return 0;
+}
