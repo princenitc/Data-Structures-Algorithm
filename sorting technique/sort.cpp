@@ -122,7 +122,7 @@ void merge(int A[],int l,int m,int h)// merging the two arrays in a single array
     i = l;
     j = m+1;
     k =l;
-    int C[100];
+    int C[h+1];
     while(i <= m && j <= h)
     {
         if(A[i] < A[j])
@@ -139,22 +139,135 @@ void merge(int A[],int l,int m,int h)// merging the two arrays in a single array
 }
 // No of the passes - log(n)
 // time complexity - O(nlog(n))
-void iterativeMergeSort(int A[],int n)
+void IMergeSort(int A[],int n)  // there is some issue with the iterative merge sort function. not running properly.
 {
-     int p,i,l,mid,h;
-     for(p = 2;p <= n;p = p*2)
-     {
-         for(i = 0;i+p-1 < n;i = i+p)
-         {
-             l = i;
-             h = i+p-1;
-             mid = floor((l+h)/2);
-             merge(A,l,mid,h);
-         }
-     }
-     if(p/2 < n)
-        merge(A,0,p/2-1,n-1);// if list is not in the even no or in the power of two
+int p,l,h,mid,i;
+for(p=2;p<=n;p=p*2)
+{
+for(i=0;i+p-1<n;i=i+p)
+    {
+    l=i;
+    h=i+p-1;
+    mid=(l+h)/2;merge(A,l,mid,h);
+    }
+    if(n-i>p/2)
+    {
+    l = i;
+    h = i+p-1;
+    mid = (l+h)/2;
+    merge(A, l, mid, n-1);
+    }
 }
+if(p/2<n)
+{
+    merge(A,0,p/2-1,n-1);
+}
+}
+
+void recursiveMergeSort(int A[],int l,int h)
+{
+    int mid;
+    if(l < h)
+    {
+        mid = (l+h)/2;
+        recursiveMergeSort(A,l,mid);
+        recursiveMergeSort(A,mid+1,h);
+        merge(A,l,mid,h);
+    }
+}
+
+// time complexity of countsort - o(n)
+// but uses a lot of memory
+int maxElement(int A[],int n)
+{
+    int m = INT32_MIN;
+    for(int i = 0;i < n;i++)
+    {
+        m = (A[i] > m) ? A[i] : m;
+    }
+    return m;
+}
+void countSort(int A[],int n)
+{
+    int *C;
+    int max = maxElement(A,n);
+    C = new int[max+1];
+    for(int i = 0;i < max+1 ;i++)
+        C[i] = 0;
+    for(int i = 0;i < n;i++)
+        C[A[i]]++;
+    int i =0,j=0;
+    while(i < max + 1)
+    {
+        if(C[i] == 0)
+            i++;
+        else
+        {
+            A[j++] = i;
+            C[i]--;
+        }
+    }
+}
+
+// Bucket or Bin sort 
+/*
+time complexity - O(n)
+- Huge space is required
+*/
+struct Node
+{
+    int data;
+    Node *next;
+};
+void insert(Node **c ,int index)
+{
+    Node *tmp = new Node;
+    tmp->data = index;
+    tmp->next = nullptr;
+    if(c[index] == nullptr)
+        c[index] = tmp;
+    else
+    {
+        Node *p = c[index];
+        while(p->next != nullptr)
+            p = p->next;
+        p->next = tmp;
+    }
+}
+int Delete(Node **c,int index)
+{
+    Node *p = c[index];
+    c[index] = c[index]->next;
+    int x = p->data;
+    delete p;
+    return x;
+}
+void bucketSort(int A[],int n)
+{
+    int max = maxElement(A,n);
+    Node** C = new Node* [max+1];
+
+    for(int i =0 ;i < max+1; i++)
+        C[i] = nullptr;
+
+    for(int i =0;i < n ;i++)  
+        insert(C,A[i]);
+
+    int i =0;
+    int j =0;  
+    while(i < max+1)
+    {
+        while(C[i] != nullptr)
+            A[j++] = Delete(C,i);
+        i++;
+    }
+}
+
+/*radix sort : 
+    time complexity - O(n)
+*/
+// In this the no of time of the calls of the function is increased instead of increasing the memory;
+
 void Display(int A[],int n)
 {
     for(int i = 0;i < n;i++)
@@ -162,11 +275,32 @@ void Display(int A[],int n)
     cout << endl;
 
 }
-
+/*Sell sort : -
+It is the extended version of the insetion sort with the little bit of modifications 
+ of the gap in the  elemetns.
+ it is inplace sorting,and it is comparison based.*/
+ void shellSort(int A[],int n)
+ {
+     int gap,i,j,tmp;
+     for(gap = n/2;gap >= 1;gap /= 2)
+     {
+         for(i = gap ;i < n;i++)
+         {
+            tmp = A[i];
+            j = i-gap;
+            while(j >= 0 && A[j] > tmp)
+            {
+                A[j+gap] = A[j];
+                j =j-gap;
+            }
+        A[j+gap] = tmp;
+         }
+     }
+ }
 int main()
 {
-    int A[]= {3,7,9,10,6,5,12,4,11,2};
+    int A[]= {3,7,9,10,6,5,2,4,11,2};
     int n = 10;
-    iterativeMergeSort(A,n);
+    shellSort(A,n);    
     Display(A,n);
 }
