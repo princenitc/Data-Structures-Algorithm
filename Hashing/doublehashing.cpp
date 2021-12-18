@@ -25,12 +25,11 @@ int PrimeHash(int key){
 }
  
 int DoubleHash(int H[], int key){
-    int idx = Hash(key);
     int i = 0;
-    while (H[(Hash(idx) + i * PrimeHash(idx)) % SIZE] != 0){
+    while (H[(Hash(key) + i * PrimeHash(key)) % SIZE] != 0){
         i++;
     }
-    return (idx + i * PrimeHash(idx)) % SIZE;
+    return (Hash(key) + i * PrimeHash(key)) % SIZE;
 }
  
 void Insert(int H[], int key){
@@ -43,15 +42,14 @@ void Insert(int H[], int key){
 }
  
 int Search(int H[], int key){
-    int idx = Hash(key);
     int i = 0;
-    while (H[(Hash(idx) + i * PrimeHash(idx)) % SIZE] != key){
+    while (H[(Hash(key) + i * PrimeHash(key)) % SIZE] != key){
         i++;
-        if (H[(Hash(idx) + i * PrimeHash(idx)) % SIZE] == 0){
+        if (H[(Hash(key) + i * PrimeHash(key)) % SIZE] == 0){
             return -1;
         }
     }
-    return (Hash(idx) + i * PrimeHash(idx)) % SIZE;
+    return (Hash(key) + i * PrimeHash(key)) % SIZE;
 }
  
  
